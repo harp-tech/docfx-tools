@@ -1,4 +1,4 @@
-# docfx-template
+# docfx-tools
 
 A docfx template for package documentation, patching the modern template to provide stylesheets and scripts for rendering custom workflow containers with copy functionality.
 
@@ -7,7 +7,7 @@ A docfx template for package documentation, patching the modern template to prov
 To include this template in a docfx website, first clone this repository as a submodule:
 
 ```
-git submodule add https://github.com/bonsai-rx/docfx-template bonsai
+git submodule add https://github.com/bonsai-rx/docfx-tools bonsai
 ```
 
 Then modify `docfx.json` to include the template immediately after the modern template:
@@ -16,7 +16,7 @@ Then modify `docfx.json` to include the template immediately after the modern te
     "template": [
       "default",
       "modern",
-      "bonsai",
+      "bonsai/template",
       "template"
     ],
 ```
@@ -37,4 +37,16 @@ export default {
         WorkflowContainer.init();
     }
 }
+```
+
+## Powershell Scripts
+
+This repository also provides helper scripts to automate several content generation steps for package documentation websites.
+
+### Exporting workflow images
+
+Exporting SVG images for all example workflows can be automated by placing all `.bonsai` files in a `workflows` folder and calling the below script pointing to the bin directory to include. A bonsai environment is assumed to be available in the `.bonsai` folder in the repository root.
+
+```ps1
+.\modules\Export-Image.ps1 "..\src\PackageName\bin\Release\net472"
 ```
