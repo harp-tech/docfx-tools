@@ -20,3 +20,21 @@ Then modify `docfx.json` to include the template immediately after the modern te
       "template"
     ],
 ```
+
+Finally, import and call the modules inside your website `template/public` folder.
+
+#### main.css
+```css
+@import "workflow.css";
+```
+
+#### main.js
+```js
+import WorkflowContainer from "./workflow.js"
+
+export default {
+    start: () => {
+        WorkflowContainer.init();
+    }
+}
+```
