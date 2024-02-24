@@ -42,6 +42,11 @@ var WorkflowContainer = {
         wrap.appendChild(element);
     },
     init: async function() {
+        const observer = new MutationObserver(() => {
+            const theme = document.documentElement.getAttribute("data-bs-theme");
+            const root = document.querySelector(':root');
+            root.style.setProperty("color-scheme", theme);
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] })
         for (const element of document.getElementsByClassName("workflow")) {
             WorkflowContainer.renderElement(element)
         }
