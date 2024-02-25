@@ -1,13 +1,19 @@
-var WorkflowContainer = {
-    createCodeHeader: function(text) {
-        const div = document.createElement("div");
-        div.className = "codeHeader";
-        div.innerHTML =
-            '<span class="language">'+ text +'</span>'+
+export default {
+    createCodeContainer: function(path) {
+        const wrap = document.createElement("pre");
+        wrap.innerHTML =
             '<a class="btn border-0 code-action" href="#" title="Copy">'+
             '  <i class="bi bi-clipboard"></i>'+
             '</a>';
-        return div;
+        const button = wrap.querySelector("a");
+        button.addEventListener("click", (e) => {
+            e.preventDefault();
+            fetch(path).then(req => req.text()).then(contents => {
+                navigator.clipboard.writeText(contents);
+                this.setCopyAlert(button);
+            });
+        });
+        return wrap;
     },
     setCopyAlert: function(element) {
         const copyIcon = element.querySelector("i");
@@ -21,24 +27,14 @@ var WorkflowContainer = {
         }, 1000);
     },
     renderElement: function(element) {
+        element.classList.add("hljs");
         const img = element.querySelector("img");
         const workflowPath = img.src;
         img.src = workflowPath.replace(/\.[^.]+$/, ".svg");
 
-        const codeHeader = WorkflowContainer.createCodeHeader("Workflow");
-        const button = codeHeader.querySelector("a");
-        button.addEventListener("click", (e) => {
-            e.preventDefault();
-            fetch(workflowPath).then(req => req.text()).then(contents => {
-                navigator.clipboard.writeText(contents);
-                WorkflowContainer.setCopyAlert(button);
-            });
-        });
-
-        const wrap = document.createElement("p");
-        const parent = element.parentElement
+        const wrap = this.createCodeContainer(workflowPath);
+        const parent = element.parentElement;
         parent.insertBefore(wrap, element);
-        wrap.appendChild(codeHeader);
         wrap.appendChild(element);
     },
     init: async function() {
@@ -48,9 +44,7 @@ var WorkflowContainer = {
             root.style.setProperty("color-scheme", theme);
         }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] })
         for (const element of document.getElementsByClassName("workflow")) {
-            WorkflowContainer.renderElement(element)
+            this.renderElement(element)
         }
     }
 }
-
-export default WorkflowContainer;
