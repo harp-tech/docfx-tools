@@ -1,6 +1,5 @@
 param(
-    [Parameter(Mandatory=$true)]
-    [string]$libPath,
+    [string[]]$libPath,
     [string]$workflowPath=".\workflows",
     [string]$bootstrapperPath="..\.bonsai\Bonsai.exe"
 )
@@ -28,10 +27,24 @@ function Convert-Svg([string]$svgFile)
     $svgDOM.Save($svgFile)
 }
 
+function Export-Svg([string[]]$libPath, [string]$svgFileName, [string]$workflowFile)
+{
+    $bootstrapperArgs = @()
+    foreach ($path in $libPath) {
+        $bootstrapperArgs += "--lib"
+        $bootstrapperArgs += "`"$(Resolve-Path $path)`""
+    }
+    $bootstrapperArgs += "--export-image"
+    $bootstrapperArgs += "`"$svgFileName`""
+    $bootstrapperArgs += "`"$workflowFile`""
+
+    &$bootstrapperPath $bootstrapperArgs
+}
+
 $sessionPath = $ExecutionContext.SessionState.Path
 foreach ($workflowFile in Get-ChildItem (Join-Path $workflowPath "*.bonsai")) {
     $svgFileName = "$($workflowFile.BaseName).svg"
     $svgFile = $sessionPath.GetUnresolvedProviderPathFromPSPath((Join-Path $workflowPath $svgFileName))
-    &$bootstrapperPath --lib (Resolve-Path $libPath) --export-image $svgFileName $workflowFile
+    Export-Svg $libPath $svgFileName $workflowFile
     Convert-Svg $svgFile
 }
