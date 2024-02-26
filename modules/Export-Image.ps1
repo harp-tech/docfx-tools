@@ -4,9 +4,25 @@ param(
     [string]$bootstrapperPath="..\.bonsai\Bonsai.exe"
 )
 
+function Import-Svg([string]$svgFile)
+{
+    $svgDOM = New-Object System.Xml.XmlDocument
+    $settings = New-Object System.Xml.XmlReaderSettings
+    $settings.MaxCharactersFromEntities = 0;
+    $settings.DtdProcessing = [System.Xml.DtdProcessing]::Parse
+    $reader = [System.Xml.XmlReader]::Create($svgFile, $settings)
+    try {
+        $svgDOM.Load($reader)
+    }
+    finally {
+        $reader.Close()
+    }
+    return $svgDOM
+}
+
 function Convert-Svg([string]$svgFile)
 {
-    [xml]$svgDOM = Get-Content $svgFile
+    $svgDOM = Import-Svg $svgFile
     $namespaceURI = $svgDOM.DocumentElement.NamespaceURI
     $nsmgr = New-Object System.Xml.XmlNamespaceManager($svgDOM.NameTable)
     $nsmgr.AddNamespace("svg", $namespaceURI)
