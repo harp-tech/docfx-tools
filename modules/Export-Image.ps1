@@ -15,7 +15,7 @@ function Export-Svg([string[]]$libPath, [string]$svgFileName, [string]$workflowF
     $bootstrapperArgs += "$svgFileName"
     $bootstrapperArgs += "$workflowFile"
 
-    Write-Host "$($bootstrapperPath) $($bootstrapperArgs)"
+    Write-Verbose "$($bootstrapperPath) $($bootstrapperArgs)"
     &$bootstrapperPath $bootstrapperArgs
 }
 
