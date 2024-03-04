@@ -9,11 +9,11 @@ function Export-Svg([string[]]$libPath, [string]$svgFileName, [string]$workflowF
     $bootstrapperArgs = @()
     foreach ($path in $libPath) {
         $bootstrapperArgs += "--lib"
-        $bootstrapperArgs += "`"$(Resolve-Path $path)`""
+        $bootstrapperArgs += "$(Resolve-Path $path)"
     }
     $bootstrapperArgs += "--export-image"
-    $bootstrapperArgs += "`"$svgFileName`""
-    $bootstrapperArgs += "`"$workflowFile`""
+    $bootstrapperArgs += "$svgFileName"
+    $bootstrapperArgs += "$workflowFile"
 
     Write-Host "$($bootstrapperPath) $($bootstrapperArgs)"
     &$bootstrapperPath $bootstrapperArgs
