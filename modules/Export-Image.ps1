@@ -21,7 +21,7 @@ function Export-Svg([string[]]$libPath, [string]$svgFileName, [string]$workflowF
 
 Import-Module (Join-Path $PSScriptRoot "Export-Tools.psm1")
 $sessionPath = $ExecutionContext.SessionState.Path
-foreach ($workflowFile in Get-ChildItem (Join-Path $workflowPath "*.bonsai")) {
+foreach ($workflowFile in Get-ChildItem -File (Join-Path $workflowPath "*.bonsai")) {
     $svgFileName = "$($workflowFile.BaseName).svg"
     Write-Host "Exporting $($svgFileName)"
     $svgFile = $sessionPath.GetUnresolvedProviderPathFromPSPath((Join-Path $workflowPath $svgFileName))
