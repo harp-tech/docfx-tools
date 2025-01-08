@@ -3,7 +3,8 @@
   padding: 1px;
 }
 
-.workflow > p > img {
+.workflow > p > img,
+.workflow > p > a > img {
   padding-top: 12px;
   padding-left: 12px;
   padding-right: 12px;
