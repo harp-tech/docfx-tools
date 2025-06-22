@@ -1,19 +1,31 @@
-@import "workflow.css";
+.workflow {
+  display: flex;
+  padding: 1px;
+}
 
-/* ==========================================================================
-   KEYBOARD SHORTCUT STYLE
-   ========================================================================== */
+.workflow > p > img,
+.workflow > p > a > img {
+  padding-top: 12px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.wrap-right > p > img,
+.wrap-right > p > a > img {
+  max-width: 50%;
+  float: inline-end;
+}
 
 kbd {
-    color: var(--bs-body-color);
-    vertical-align: middle;
-    background-color: var(--bs-body-bg);
-    border: solid 1px var(--bs-secondary);
-    border-bottom-color: var(--bs-secondary);
-    box-shadow: inset 0 -1px 0 var(--bs-secondary-bg-subtle);
-    border-radius: .25rem;
-    padding: .25rem;
-    font-size: .75rem;
-    line-height: 10px;
-    display: inline-block;
+  color: var(--bs-body-color);
+  vertical-align: middle;
+  background-color: var(--bs-body-bg);
+  border: solid 1px var(--bs-secondary);
+  border-bottom-color: var(--bs-secondary);
+  box-shadow: inset 0 -1px 0 var(--bs-secondary-bg-subtle);
+  border-radius: .25rem;
+  padding: .25rem;
+  font-size: .75rem;
+  line-height: 10px;
+  display: inline-block;
 }
