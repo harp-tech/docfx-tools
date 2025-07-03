@@ -7,7 +7,7 @@ A docfx template for package documentation, patching the modern template to prov
 To include this template in a docfx website, first clone this repository as a submodule:
 
 ```
-git submodule add https://github.com/bonsai-rx/docfx-tools bonsai-docfx
+git submodule add https://github.com/harp-tech/docfx-tools harp-docfx
 ```
 
 Then modify `docfx.json` to include the template immediately after the modern template:
@@ -16,7 +16,7 @@ Then modify `docfx.json` to include the template immediately after the modern te
     "template": [
       "default",
       "modern",
-      "bonsai-docfx/template",
+      "harp-docfx/template",
       "template"
     ],
 ```
