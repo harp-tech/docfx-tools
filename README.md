@@ -80,7 +80,7 @@ Then add the API reference to the top-level `toc.yml`:
 
 ## Extending UniversalReference pages
 
-A custom template listed after `bonsai-docfx/template` can transform UniversalReference pages without replacing `UniversalReference.extension.js`. Add a module named `UniversalReference.{name}.js` to the template, where the name is anything other than `common` or `extension`, and assign a `preTransform` or `postTransform` function to `exports`:
+A custom template listed after `harp-docfx/template` can transform UniversalReference pages without replacing `UniversalReference.extension.js`. Add a module named `UniversalReference.{name}.js` to the template, where the name is anything other than `common` or `extension`, and assign a `preTransform` or `postTransform` function to `exports`:
 
 ```js
 exports.postTransform = function (model) {
@@ -97,3 +97,44 @@ Then register the module in the `token.json` of the template, under a key that e
 ```
 
 Registered transforms run after the transforms of this template, in the order of their templates in `docfx.json`. Every transform runs on every UniversalReference page, so a transform for one kind of page should return any other page unchanged. A template that declares the same key as an earlier template replaces its transform.
+
+## Register reference pages
+
+The template renders the register reference that the `generate documentation docfx` command of the [Harp toolkit](https://github.com/harp-tech/toolkit) writes from a `device.yml` file.
+
+```ps1
+dotnet harp.toolkit generate documentation docfx ..\device.yml -o ..\artifacts\docs\registers
+```
+
+Include the generated files in the `build.content` section of `docfx.json`:
+
+```json
+      {
+        "src": "../artifacts/docs/registers/",
+        "dest": "registers",
+        "files": "**/*.yml"
+      }
+```
+
+Then add the register pages to a `toc.yml`:
+
+```yml
+- name: Registers
+  href: ../artifacts/docs/registers/
+```
+
+The generated `registers.md` file holds a table of all registers, which can be included in another page:
+
+```md
+[!INCLUDE [](../artifacts/docs/registers/registers.md)]
+```
+
+The register pages declare the UIDs of the corresponding .NET types. A site that also builds the .NET API reference has to exclude those types from it, for example with a `filter.yml` file.
+
+The body element of each register reference page has its `data-yaml-mime` attribute set to `HarpReference`, so a stylesheet in the site template can apply rules to these pages only:
+
+```css
+body[data-yaml-mime=HarpReference] article div.facts {
+  font-size: 14px;
+}
+```

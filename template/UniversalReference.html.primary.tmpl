@@ -1,0 +1,16 @@
+{{!master(layout/_master.tmpl)}}
+
+{{#harpReference}}
+{{>partials/harp/reference}}
+{{/harpReference}}
+{{^harpReference}}
+{{#isNamespace}}
+  {{>partials/uref/namespace}}
+{{/isNamespace}}
+{{#isClass}}
+  {{>partials/uref/class}}
+{{/isClass}}
+{{#isEnum}}
+  {{>partials/enum}}
+{{/isEnum}}
+{{/harpReference}}
