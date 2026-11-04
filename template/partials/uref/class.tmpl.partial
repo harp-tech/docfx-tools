@@ -1,0 +1,32 @@
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
+
+{{>partials/uref/class.header}}
+{{>partials/uref/members}}
+{{#extensionMethods.0}}
+<h2 class="section" id="extensionmethods">{{__global.extensionMethods}}</h2>
+{{/extensionMethods.0}}
+{{#extensionMethods}}
+<div>
+  {{#definition}}
+    <xref href="{{definition}}" altProperty="fullName" displayProperty="nameWithType"/>
+  {{/definition}}
+  {{^definition}}
+    <xref href="{{uid}}" altProperty="fullName" displayProperty="nameWithType"/>
+  {{/definition}}
+</div>
+{{/extensionMethods}}
+{{#seealso.0}}
+<h2 class="section" id="seealso">{{__global.seealso}}</h2>
+<div class="seealso">
+{{/seealso.0}}
+{{#seealso}}
+  {{#isCref}}
+    <div>{{{type.specName.0.value}}}</div>
+  {{/isCref}}
+  {{^isCref}}
+    <div>{{{url}}}</div>
+  {{/isCref}}
+{{/seealso}}
+{{#seealso.0}}
+</div>
+{{/seealso.0}}
