@@ -19,15 +19,28 @@
 {{#intro}}
 <p>{{{intro}}}</p>
 {{/intro}}
+{{#details.0}}
+<div class="text-secondary d-flex flex-wrap column-gap-4">
+{{/details.0}}
+{{#details}}
+  <dl><div><dt>{{term}}</dt><dd>{{{description}}}</dd></div></dl>
+{{/details}}
+{{#details.0}}
+</div>
+{{/details.0}}
+{{#rows.0}}
 <table class="table table-bordered table-condensed">
   <thead>
     <tr>
+{{/rows.0}}
 {{#columns}}
       <th>{{{header}}}</th>
 {{/columns}}
+{{#rows.0}}
     </tr>
   </thead>
   <tbody>
+{{/rows.0}}
 {{#rows}}
     <tr{{#uid}} id="{{id}}" data-uid="{{uid}}"{{/uid}}>
 {{#cells}}
@@ -35,8 +48,10 @@
 {{/cells}}
     </tr>
 {{/rows}}
+{{#rows.0}}
   </tbody>
 </table>
+{{/rows.0}}
 {{/tables}}
 
 {{>partials/uref/members}}

@@ -49,7 +49,7 @@ function getPayloadTables(register, anchors) {
       anchors[mask.uid] = common.getHtmlId(mask.uid) + '_values';
     });
     tables.push(getTable(payloadId, 'Payload', 2, register.members.map(getMemberItem), getMemberColumns(anchors),
-      'The payload is a structure with the following members.'));
+      'The payload is a structure with the members listed below.'));
     masks.forEach(function (mask) {
       var users = register.members.filter(function (member) {
         return member.interfaceType && member.interfaceType.uid === mask.uid;
@@ -59,11 +59,52 @@ function getPayloadTables(register, anchors) {
     });
   } else if (masks.length > 0) {
     tables.push(getTable(payloadId, 'Payload', 2, masks[0].values.map(getValueItem), valueColumns, getMaskIntro(masks[0], [])));
+  } else {
+    tables.push({ id: payloadId, heading: 'Payload', level: 2, intro: getPrimitiveIntro(register), columns: [], rows: [] });
   }
-  if (tables.length > 0 && register.interfaceType && register.interfaceType.uid) {
-    anchors[register.interfaceType.uid] = payloadId;
-  }
+  var mask = register.members ? null : masks[0];
+  tables[0].details = [
+    getDetail('Interface type', getTypeLink(register.interfaceType), true),
+    getDetail('Default', mask ? formatMaskValue(mask, register.defaultValue) : register.defaultValue),
+    getDetail('Minimum', register.minValue),
+    getDetail('Maximum', register.maxValue)
+  ].filter(function (detail) { return detail.description; });
   return tables;
+}
+
+var primitiveTypes = {
+  U8: ['an unsigned 8-bit integer', 'unsigned 8-bit integers'],
+  S8: ['a signed 8-bit integer', 'signed 8-bit integers'],
+  U16: ['an unsigned 16-bit integer', 'unsigned 16-bit integers'],
+  S16: ['a signed 16-bit integer', 'signed 16-bit integers'],
+  U32: ['an unsigned 32-bit integer', 'unsigned 32-bit integers'],
+  S32: ['a signed 32-bit integer', 'signed 32-bit integers'],
+  U64: ['an unsigned 64-bit integer', 'unsigned 64-bit integers'],
+  S64: ['a signed 64-bit integer', 'signed 64-bit integers'],
+  Float: ['a 32-bit floating-point number', '32-bit floating-point numbers']
+};
+
+function getPrimitiveIntro(register) {
+  var names = primitiveTypes[register.payloadType];
+  if (!names) return '';
+  if (register.length > 1) {
+    return 'The payload is an array of ' + register.length + ' ' + names[1] + '.';
+  }
+  return 'The payload is ' + names[0] + '.';
+}
+
+function formatMaskValue(mask, value) {
+  if (!hasValue(value)) return value;
+  var values = mask.values.map(function (item) { return { name: item.name, value: parseInt(item.value) }; });
+  if (mask.kind === 'groupMask') {
+    var match = values.filter(function (item) { return item.value === value; })[0];
+    return match ? match.name : value;
+  }
+  var names = values.filter(function (item) { return item.value !== 0 && (value & item.value) === item.value; });
+  var covered = names.reduce(function (bits, item) { return bits | item.value; }, 0);
+  return covered === value && names.length > 0
+    ? names.map(function (item) { return item.name; }).join(', ')
+    : value;
 }
 
 function getMaskIntro(mask, users) {
@@ -73,7 +114,7 @@ function getMaskIntro(mask, users) {
     var list = names.length > 1 ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] : names[0];
     subject = 'The ' + list + (names.length > 1 ? ' members are each' : ' member is');
   }
-  return subject + (mask.kind === 'bitMask' ? ' a combination of the following flags.' : ' one of the following values.');
+  return subject + (mask.kind === 'bitMask' ? ' a combination of the flags listed below.' : ' one of the values listed below.');
 }
 
 function getDetails(harp, anchors) {
@@ -82,12 +123,8 @@ function getDetails(harp, anchors) {
   if (register) {
     details.push(getDetail('Address', register.address));
     details.push(getDetail('Payload type', register.payloadType));
-    details.push(getDetail('Access', (register.access || []).join(', ')));
     details.push(getDetail('Length', register.length));
-    details.push(getDetail('Default', register.defaultValue));
-    details.push(getDetail('Minimum', register.minValue));
-    details.push(getDetail('Maximum', register.maxValue));
-    details.push(getDetail('Interface type', getTypeLink(register.interfaceType, anchors), true));
+    details.push(getDetail('Access', (register.access || []).join(', ')));
   }
   if (harp.payload) {
     var links = (harp.payload.registers || []).map(function (type) { return getTypeLink(type); });
@@ -144,6 +181,7 @@ function getTable(id, heading, level, items, columns, intro) {
     id: id,
     heading: heading,
     level: level,
+    details: [],
     intro: intro,
     columns: columns.filter(function (column, index) { return used[index]; }).map(function (column) {
       return { header: column.header };
